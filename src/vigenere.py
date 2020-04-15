@@ -1,8 +1,8 @@
 from src.symbols import vigenere_alphabet
 
 
-class Vigenere:
-    alphabet_set = set(symbols.vigenere_alphabet)
+class VigenereCypher:
+    alphabet_set = set(vigenere_alphabet)
 
     @staticmethod
     def _process_char(char, key_char, reverse: bool = False):
@@ -23,10 +23,11 @@ class Vigenere:
 
         encoded_text = ""
 
-        for index, char in text:
+        for index, char in enumerate(text):
             if char in cls.alphabet_set:
                 encoded_text += cls._process_char(char, key[index])
-
+            else:
+                encoded_text += char
         return encoded_text
 
     @classmethod
@@ -37,8 +38,11 @@ class Vigenere:
 
         decoded_text = ""
 
-        for index, char in text:
+        for index, char in enumerate(text):
             if char in cls.alphabet_set:
                 decoded_text += cls._process_char(char, key[index], True)
+            else:
+                decoded_text += char
+        return decoded_text
 
         return decoded_text

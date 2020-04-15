@@ -1,10 +1,35 @@
 from src.caesar import CaesarCypher
+from src.vigenere import VigenereCypher
 import argparse
 import sys
 
+cyphers = {
+    "caesar": CaesarCypher,
+    "vigenere": VigenereCypher
+}
+
+
+is_integer_key = {
+    "caesar": True,
+    "vigenere": False
+}
+
+
+def encode(text, key, cypher):
+    if is_integer_key[cypher]:
+        return getattr(cyphers[cypher], "encode")(text, int(key))
+    return getattr(cyphers[cypher], "encode")(text, key)
+
+
+def decode(text, key, cypher):
+    if is_integer_key[cypher]:
+        return getattr(cyphers[cypher], "decode")(text, int(key))
+    return getattr(cyphers[cypher], "decode")(text, key)
+
+
 functions = {
-    "encode": CaesarCypher.encode,
-    "decode": CaesarCypher.decode,
+    "encode": encode,
+    "decode": decode,
     "hack": CaesarCypher.hack,
 }
 
@@ -15,10 +40,11 @@ def read_file(file):
 
 def make_parser():
     parser = argparse.ArgumentParser(description="Crypt")
-    parser.add_argument("mod", action="store", help="working mod - encoding")
+    parser.add_argument("mod", help="working mod - encoding")
     parser.add_argument("--input_file", help="file with text to work")
     parser.add_argument("--output_file", help="file to write result")
-    parser.add_argument("--key", type=int, help="key for cypher")
+    parser.add_argument("--cypher", help="cypher algorithm")
+    parser.add_argument("--key", help="key for cypher")
     return parser
 
 
@@ -31,10 +57,9 @@ def main(argv):
         with open(args.input_file, "r") as f:
             text = read_file(f)
 
+    processed_text = ''
     if args.key is not None:
-        processed_text = functions[args.mod](text, args.key)
-    else:
-        processed_text = functions[args.mod](text)
+        processed_text = functions[args.mod](text, args.key, args.cypher)
 
     if args.output_file is None:
         print(processed_text)
@@ -44,7 +69,7 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    try:
-        main(sys.argv)
-    except Exception as e:
-        print("Error:", e)
+    # try:
+    main(sys.argv)
+    # except Exception as e:
+    # print("Error:", e)
