@@ -4,12 +4,13 @@ import sys
 
 functions = {
     "encode": CaesarCypher.encode,
-    "decode": CaesarCypher.decode
+    "decode": CaesarCypher.decode,
+    "hack": CaesarCypher.hack,
 }
 
 
 def read_file(file):
-    return "\n".join(file.readlines())
+    return "".join(file.readlines())
 
 
 def main(argv):

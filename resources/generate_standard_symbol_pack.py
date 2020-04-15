@@ -4,13 +4,10 @@ import json
 
 def generate():
     rus_lowercase = "абвгдеёжзийклмнопрстуфхцчшщъыьэюя"
-    rus_uppercase = rus_lowercase.upper()
 
     symbols = {
-        "eng_lowercase": ascii_lowercase,
-        "eng_uppercase": ascii_uppercase,
-        "rus_lowercase": rus_lowercase,
-        "rus_uppercase": rus_uppercase,
+        "eng": ascii_lowercase,
+        "rus": rus_lowercase,
         "other": " " + punctuation
     }
 
