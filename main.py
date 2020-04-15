@@ -13,14 +13,17 @@ def read_file(file):
     return "".join(file.readlines())
 
 
-def main(argv):
+def make_parser():
     parser = argparse.ArgumentParser(description="Crypt")
     parser.add_argument("mod", action="store", help="working mod - encoding")
     parser.add_argument("--input_file", help="file with text to work")
     parser.add_argument("--output_file", help="file to write result")
     parser.add_argument("--key", type=int, help="key for cypher")
+    return parser
 
-    args = parser.parse_args()
+
+def main(argv):
+    args = make_parser().parse_args()
 
     if args.input_file is None:
         text = read_file(sys.stdin)
@@ -41,4 +44,7 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    try:
+        main(sys.argv)
+    except Exception as e:
+        print("Error:", e)

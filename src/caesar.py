@@ -15,9 +15,9 @@ class CaesarCypher:
     @classmethod
     def _shift(cls, char, key: int, reverse: bool = False):
         letter = char.lower()
-        for pack in symbols.supported_symbols:
-            if letter in symbols.supported_symbols[pack]:
-                alphabet = symbols.supported_symbols[pack]
+        for pack in symbols.caesar_symbols:
+            if letter in symbols.caesar_symbols[pack]:
+                alphabet = symbols.caesar_symbols[pack]
 
                 if reverse:
                     key = len(alphabet) - key
@@ -53,7 +53,7 @@ class CaesarCypher:
         for char in text:
             letter = char.lower()
             for pack in symbols.symbol_frequency:
-                if letter in symbols.supported_symbols[pack]:
+                if letter in symbols.caesar_symbols[pack]:
                     letters_number += 1
                 if letter in symbols.symbol_frequency[pack]:
                     letters_counter[letter] += 1

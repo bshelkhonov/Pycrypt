@@ -11,9 +11,19 @@ def _get_frequencies(path="./resources/letter_frequencies.json"):
         return json.load(f)
 
 
-supported_symbols = _get_symbol_pack()
+caesar_symbols = _get_symbol_pack()
 symbol_frequency = _get_frequencies()
 
+
+def _get_vigenere_alphabet():
+    alpha = set("".join(caesar_symbols.values()))
+    alpha |= set("".join(chars.upper() for chars in caesar_symbols.values()))
+    return "".join(sorted(list(alpha)))
+
+
+vigenere_alphabet = _get_vigenere_alphabet()
+
 if __name__ == "__main__":
-    print(_get_symbol_pack("../resources/symbols.json"))
-    print(_get_frequencies("../resources/letter_frequencies.json"))
+    print(caesar_symbols)
+    print(symbol_frequency)
+    print(vigenere_alphabet)
