@@ -43,6 +43,5 @@ class VigenereCypher:
                 decoded_text += cls._process_char(char, key[index], True)
             else:
                 decoded_text += char
-        return decoded_text
 
         return decoded_text

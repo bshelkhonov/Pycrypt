@@ -1,17 +1,20 @@
 from src.caesar import CaesarCypher
 from src.vigenere import VigenereCypher
+from src.vernam import VernamCypher
 import argparse
 import sys
 
 cyphers = {
     "caesar": CaesarCypher,
-    "vigenere": VigenereCypher
+    "vigenere": VigenereCypher,
+    "vernam": VernamCypher
 }
 
 
 is_integer_key = {
     "caesar": True,
-    "vigenere": False
+    "vigenere": False,
+    "vernam": False
 }
 
 
@@ -48,7 +51,7 @@ def make_parser():
     return parser
 
 
-def main(argv):
+def main():
     args = make_parser().parse_args()
 
     if args.input_file is None:
@@ -69,7 +72,4 @@ def main(argv):
 
 
 if __name__ == "__main__":
-    # try:
-    main(sys.argv)
-    # except Exception as e:
-    # print("Error:", e)
+    main()
