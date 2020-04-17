@@ -19,7 +19,7 @@ def _generate(input_file, pack_name):
                 letters_counter[letter] += 1
                 letters_number += 1
 
-    data = dict(letters_counter.most_common(len(alphabet) // 2))
+    data = dict(letters_counter.most_common())
 
     for letter in data:
         data[letter] /= letters_number
