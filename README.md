@@ -7,7 +7,7 @@
 - шифр Вернама (шифрование, расшифрока)
 
 ## Запуск:
-#####Шифрование и расшифровка:
+##### Шифрование и расшифровка:
 ```
 python pycrypt.py {mode} --input_file {input_file} --output_file {output_file} --cypher {cypher} --key {key}
 ```
