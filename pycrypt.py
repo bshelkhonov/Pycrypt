@@ -26,6 +26,11 @@ def output_text(text, output_file):
     output_file.write(text)
 
 
+def get_text_from_file(file):
+    with open(file, "r") as f:
+        return input_text(f)
+
+
 def encode(args):
     text = input_text(args.input_file)
     try:
@@ -56,8 +61,11 @@ def train(args):
     print(f"Trained {args.pack} language")
 
 
-def read_file(file):
-    return "".join(file.readlines())
+def reset(args):
+    trainer.train(
+        get_text_from_file("resources/text_for_learning_eng.txt"), "eng")
+    trainer.train(
+        get_text_from_file("resources/text_for_learning_rus.txt"), "rus")
 
 
 def make_parser():
@@ -102,6 +110,9 @@ def make_parser():
                               help="Language", required=True)
     train_parser.add_argument("--input_file", type=argparse.FileType("r"),
                               help="Input file", required=True)
+
+    reset_parser = subparsers.add_parser("reset", help="For reset")
+    reset_parser.set_defaults(mode="reset", func=reset)
 
     return parser
 
