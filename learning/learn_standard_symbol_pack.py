@@ -11,7 +11,7 @@ def generate():
         "other": " " + punctuation
     }
 
-    with open("symbols.json", "w") as f:
+    with open("../resources/symbols.json", "w") as f:
         json.dump(symbols, f)
 
 

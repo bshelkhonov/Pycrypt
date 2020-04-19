@@ -1,4 +1,4 @@
-from src.symbols import vigenere_alphabet
+from resources.symbols import vigenere_alphabet
 
 
 class VigenereCypher:

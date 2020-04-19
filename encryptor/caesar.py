@@ -1,4 +1,4 @@
-import src.symbols as symbols
+import resources.symbols as symbols
 import random
 import math
 import collections
@@ -27,7 +27,7 @@ class CaesarCypher:
         return char
 
     @classmethod
-    def encode(cls, text, key=random.randint(1, 25)):
+    def encode(cls, text, key: int = random.randint(1, 25)):
         encoded_text = ""
 
         for char in text:

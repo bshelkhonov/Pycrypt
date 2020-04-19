@@ -1,6 +1,7 @@
-from src.caesar import CaesarCypher
-from src.vigenere import VigenereCypher
-from src.vernam import VernamCypher
+from encryptor.caesar import CaesarCypher
+from encryptor.vigenere import VigenereCypher
+from encryptor.vernam import VernamCypher
+import learning.learn_text as trainer
 import argparse
 import sys
 
@@ -27,7 +28,11 @@ def output_text(text, output_file):
 
 def encode(args):
     text = input_text(args.input_file)
-    key = int(args.key) if is_integer_key[args.cypher] else args.key
+    try:
+        key = int(args.key) if is_integer_key[args.cypher] else args.key
+    except ValueError:
+        print("Key must be integer")
+        sys.exit(0)
     processed_text = cyphers[args.cypher].encode(text, key)
     output_text(processed_text, args.output_file)
 
@@ -43,6 +48,12 @@ def hack(args):
     text = input_text(args.input_file)
     processed_text = cyphers[args.cypher].hack(text)
     output_text(processed_text, args.output_file)
+
+
+def train(args):
+    text = input_text(args.input_file)
+    trainer.train(text, args.pack)
+    print(f"Trained {args.pack} language")
 
 
 def read_file(file):
@@ -84,6 +95,13 @@ def make_parser():
                              type=argparse.FileType("w"), help="Output file")
     hack_parser.add_argument("--cypher", choices=["caesar"],
                              help="Cypher algorithm", required=True)
+
+    train_parser = subparsers.add_parser("train", help="For training")
+    train_parser.set_defaults(mode="train", func=train)
+    train_parser.add_argument("--pack", choices=["eng", "rus"],
+                              help="Language", required=True)
+    train_parser.add_argument("--input_file", type=argparse.FileType("r"),
+                              help="Input file", required=True)
 
     return parser
 
