@@ -1,4 +1,4 @@
-import resources.symbols as symbols
+import encryptor.symbols as symbols
 import collections
 import json
 
@@ -85,11 +85,3 @@ class Trainer:
         data = [word[0] for word in words_counter.most_common(top_words_num)]
 
         return data
-
-    @classmethod
-    def train(cls, text: str, pack_name: str):
-        data = cls.calculate_letters_frequency(text, pack_name)
-        cls._add_in_json(pack_name, data, "resources/letter_frequencies.json")
-
-        data = cls.find_most_common_words(text, pack_name)
-        cls._add_in_json(pack_name, data, "resources/most_common_words.json")

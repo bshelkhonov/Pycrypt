@@ -1,4 +1,4 @@
-import resources.symbols as symbols
+import encryptor.symbols as symbols
 import random
 import math
 import collections
@@ -49,20 +49,20 @@ class CaesarCypher:
         return decoded_text
 
     @classmethod
-    def letter_loss(cls, text):
+    def letter_loss(cls, text, proba_data):
 
         letters_counter = dict()
         letters_number = collections.Counter()
 
-        for pack in symbols.symbol_frequency:
+        for pack in proba_data:
             letters_counter[pack] = collections.Counter()
 
         for char in text:
             letter = char.lower()
-            for pack in symbols.symbol_frequency:
+            for pack in proba_data:
                 if letter in symbols.alphabets[pack]:
                     letters_number[pack] += 1
-                if letter in symbols.symbol_frequency[pack]:
+                if letter in proba_data[pack]:
                     letters_counter[pack][letter] += 1
 
         score = 0
@@ -72,39 +72,41 @@ class CaesarCypher:
 
             for letter in data:
                 freq_cur = data[letter] / letters_number[pack]
-                freq_orig = symbols.symbol_frequency[pack][letter]
+                freq_orig = proba_data[pack][letter]
                 score += (freq_cur - freq_orig) ** 2
 
         return score
 
     @classmethod
-    def word_loss(cls, text):
+    def word_loss(cls, text, word_data):
         word_match = 0
 
         for word in text.split():
             word = cls._extract_word(word).lower()
 
-            for pack in symbols.most_common_words:
-                if word in symbols.most_common_words[pack]:
+            for pack in word_data:
+                if word in word_data[pack]:
                     word_match += 1
                     break
 
         return -word_match
 
     @classmethod
-    def hack(cls, text):
+    def hack(cls, text, proba_data, words_data):
         MIN_TEXT_LENGTH = 5000
         KEY_VARIANTS = 200
 
         best_variant = (math.inf, -1)
 
-        if len(text) < MIN_TEXT_LENGTH:
+        if words_data is not None and len(text) < MIN_TEXT_LENGTH:
             loss_fn = cls.word_loss
+            data = words_data
         else:
             loss_fn = cls.letter_loss
+            data = proba_data
 
         for key in range(KEY_VARIANTS):
             decoded = cls.decode(text, key)
-            best_variant = min((loss_fn(decoded), key), best_variant)
+            best_variant = min((loss_fn(decoded, data), key), best_variant)
 
         return cls.decode(text, best_variant[1])

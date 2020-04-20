@@ -6,6 +6,7 @@ from learning.learn_text import Trainer
 import argparse
 import sys
 import json
+import os.path
 
 cyphers = {
     "caesar": CaesarCypher,
@@ -32,9 +33,28 @@ def write_json(data, output_file):
     json.dump(data, output_file)
 
 
+def read_json(input_file):
+    return json.load(input_file)
+
+
 def get_text_from_file(file):
     with open(file, "r") as f:
         return input_text(f)
+
+
+def get_data_from_json(file):
+    if os.path.isfile(file):
+        try:
+            with open(file, "r") as f:
+                return read_json(f)
+        except json.JSONDecodeError:
+            pass
+    return dict()
+
+
+def write_data_to_json(data, file):
+    with open(file, "w") as f:
+        write_json(data, f)
 
 
 def clear_file(filename):
@@ -60,30 +80,25 @@ def decode(args):
 
 
 def hack(args):
+    proba_data = read_json(args.proba)
+    if args.words is not None:
+        words_data = read_json(args.words)
+    else:
+        words_data = None
     text = input_text(args.input_file)
-    processed_text = cyphers[args.cypher].hack(text)
+    processed_text = cyphers[args.cypher].hack(text, proba_data, words_data)
     output_text(processed_text, args.output_file)
 
 
-def calculate_letter_frequencies(args):
+def learn(args):
     text = input_text(args.input_file)
-    data = Trainer.calculate_letters_frequency(text, args.pack)
-    write_json(data, args.output_file)
-
-
-def train(args):
-    text = input_text(args.input_file)
-    Trainer.train(text, args.pack)
-    print(f"Trained {args.pack} language")
-
-
-def reset(args):
-    clear_file("resources/letter_frequencies.json")
-    clear_file("resources/most_common_words.json")
-    Trainer.train(
-        get_text_from_file("resources/text_for_learning_eng.txt"), "eng")
-    Trainer.train(
-        get_text_from_file("resources/text_for_learning_rus.txt"), "rus")
+    current_data = get_data_from_json(args.output_file)
+    if args.mode == "letters":
+        data = Trainer.calculate_letters_frequency(text, args.pack)
+    else:
+        data = Trainer.find_most_common_words(text, args.pack)
+    current_data[args.pack] = data
+    write_data_to_json(current_data, args.output_file)
 
 
 def test(args):
@@ -123,29 +138,25 @@ def make_parser():
                              type=argparse.FileType("r"), help="Input file")
     hack_parser.add_argument("--output_file", default=sys.stdout,
                              type=argparse.FileType("w"), help="Output file")
+    hack_parser.add_argument("--proba", type=argparse.FileType("r"),
+                             help="File with probabilities", required=True)
+    hack_parser.add_argument("--words", type=argparse.FileType("r"),
+                             help="File with most common words")
     hack_parser.add_argument("--cypher", choices=["caesar"],
                              help="Cypher algorithm", required=True)
 
-    calc_parser = subparsers.add_parser("calc",
+    calc_parser = subparsers.add_parser("learn",
                                         help="For frequencies calculating")
-    calc_parser.set_defaults(mode="calc", func=calculate_letter_frequencies)
-
+    calc_parser.set_defaults(mode="learn", func=learn)
+    calc_parser.add_argument("--mode", choices=["letters", "words"],
+                             help="letters - calculate letters frequencies, \
+                              words - find most common words", required=True)
     calc_parser.add_argument("--pack", choices=["eng", "rus"], help="Language",
                              required=True)
     calc_parser.add_argument("--input_file", default=sys.stdin,
                              type=argparse.FileType("r"), help="Input file")
     calc_parser.add_argument("--output_file", default=sys.stdout,
-                             type=argparse.FileType("w"), help="Output file")
-
-    train_parser = subparsers.add_parser("train", help="For training")
-    train_parser.set_defaults(mode="train", func=train)
-    train_parser.add_argument("--pack", choices=["eng", "rus"],
-                              help="Language", required=True)
-    train_parser.add_argument("--input_file", type=argparse.FileType("r"),
-                              help="Input file", required=True)
-
-    reset_parser = subparsers.add_parser("reset", help="For reset")
-    reset_parser.set_defaults(mode="reset", func=reset)
+                             help="Output file", required=True)
 
     testing_parser = subparsers.add_parser("test", help="Run tests")
     testing_parser.set_defaults(mode="test", func=test)

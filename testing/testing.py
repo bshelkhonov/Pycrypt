@@ -43,17 +43,17 @@ class Testing:
         if no_errors:
             print("Successfully passed encoding/decoding test")
 
-        print("Running Caesar hacking test")
-        no_errors = True
-        for test_file in cls._test_files:
-            text = cls._get_text_from_file(test_file)
-            try:
-                cls._test_hack(CaesarCypher, text, random.randint(1, 10))
-            except AssertionError:
-                no_errors = False
-                print(f"Caesar hacking test failed: {test_file}")
-        if no_errors:
-            print("Successfully passed Caesar hacking test")
+        # print("Running Caesar hacking test")
+        # no_errors = True
+        # for test_file in cls._test_files:
+        #     text = cls._get_text_from_file(test_file)
+        #     try:
+        #         cls._test_hack(CaesarCypher, text, random.randint(1, 10))
+        #     except AssertionError:
+        #         no_errors = False
+        #         print(f"Caesar hacking test failed: {test_file}")
+        # if no_errors:
+        #     print("Successfully passed Caesar hacking test")
 
     @classmethod
     def _test_vigenere(cls):
