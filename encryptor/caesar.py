@@ -51,25 +51,29 @@ class CaesarCypher:
     @classmethod
     def letter_loss(cls, text):
 
-        letters_counter = collections.Counter()
-        letters_number = 0
+        letters_counter = dict()
+        letters_number = collections.Counter()
+
+        for pack in symbols.symbol_frequency:
+            letters_counter[pack] = collections.Counter()
 
         for char in text:
             letter = char.lower()
             for pack in symbols.symbol_frequency:
                 if letter in symbols.alphabets[pack]:
-                    letters_number += 1
+                    letters_number[pack] += 1
                 if letter in symbols.symbol_frequency[pack]:
-                    letters_counter[letter] += 1
+                    letters_counter[pack][letter] += 1
 
-        data = dict(letters_counter)
         score = 0
-        for letter in data:
-            for pack in symbols.symbol_frequency:
-                if letter in symbols.symbol_frequency[pack]:
-                    freq_cur = data[letter] / letters_number
-                    freq_orig = symbols.symbol_frequency[pack][letter]
-                    score += (freq_cur - freq_orig) ** 2
+
+        for pack in letters_counter:
+            data = dict(letters_counter[pack])
+
+            for letter in data:
+                freq_cur = data[letter] / letters_number[pack]
+                freq_orig = symbols.symbol_frequency[pack][letter]
+                score += (freq_cur - freq_orig) ** 2
 
         return score
 
@@ -90,7 +94,7 @@ class CaesarCypher:
     @classmethod
     def hack(cls, text):
         MIN_TEXT_LENGTH = 5000
-        KEY_VARIANTS = 50
+        KEY_VARIANTS = 200
 
         best_variant = (math.inf, -1)
 

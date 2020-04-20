@@ -18,6 +18,7 @@ class Testing:
     @staticmethod
     def _test_encode(cypher, text, key):
         temp = cypher.encode(text, key)
+        assert temp != text
         temp = cypher.decode(temp, key)
         assert text == temp
 
@@ -30,48 +31,57 @@ class Testing:
     @classmethod
     def _test_caesar(cls):
         print("Running Caesar encoding/decoding test")
-        try:
-            for test_file in cls._test_files:
-                text = cls._get_text_from_file(test_file)
+        no_errors = True
+        for test_file in cls._test_files:
+            text = cls._get_text_from_file(test_file)
+            try:
                 cls._test_encode(CaesarCypher, text, random.randint(1, 10))
-        except AssertionError:
-            print("Caesar test failed - encoding, decoding")
-        else:
+            except AssertionError:
+                no_errors = False
+                print(f"Caesar test failed - encoding, decoding: {test_file}")
+
+        if no_errors:
             print("Successfully passed encoding/decoding test")
 
         print("Running Caesar hacking test")
-        try:
-            for test_file in cls._test_files:
-                text = cls._get_text_from_file(test_file)
+        no_errors = True
+        for test_file in cls._test_files:
+            text = cls._get_text_from_file(test_file)
+            try:
                 cls._test_hack(CaesarCypher, text, random.randint(1, 10))
-        except AssertionError:
-            print("Caesar hacking test failed")
-        else:
-            print("Successfully passed hacking test")
+            except AssertionError:
+                no_errors = False
+                print(f"Caesar hacking test failed: {test_file}")
+        if no_errors:
+            print("Successfully passed Caesar hacking test")
 
     @classmethod
     def _test_vigenere(cls):
         print("Running Vigenere encoding/decoding test")
-        try:
-            for test_file in cls._test_files:
-                text = cls._get_text_from_file(test_file)
+        no_errors = True
+        for test_file in cls._test_files:
+            text = cls._get_text_from_file(test_file)
+            try:
                 cls._test_encode(VigenereCypher, text, "banana")
-        except AssertionError:
-            print("Vigenere encoding/decoding test failed")
-        else:
+            except AssertionError:
+                no_errors = False
+                print(f"Vigenere encoding/decoding test failed: {test_file}")
+        if no_errors:
             print("Successfully passed encoding/decoding test")
 
     @classmethod
     def _test_vernam(cls):
         print("Running Vigenere encoding/decoding test")
-        try:
-            for test_file in cls._test_files:
-                text = cls._get_text_from_file(test_file)
-                key = VigenereCypher.encode(text, "pineapple")
+        no_errors = True
+        for test_file in cls._test_files:
+            text = cls._get_text_from_file(test_file)
+            key = VigenereCypher.encode(text, "pineapple")
+            try:
                 cls._test_encode(VernamCypher, text, key)
-        except AssertionError:
-            print("Vigenere encoding/decoding test failed")
-        else:
+            except AssertionError:
+                no_errors = False
+                print("Vernam encoding/decoding test failed")
+        if no_errors:
             print("Successfully passed encoding/decoding test")
 
     @classmethod
