@@ -15,6 +15,14 @@ def _is_proper_name(word: str) -> bool:
     return word[0].isupper()
 
 
+def _get_current_data(file_name) -> dict:
+    try:
+        with open(file_name, "r") as f:
+            return json.load(f)
+    except json.decoder.JSONDecodeError:
+        return dict()
+
+
 def _learn_letter_frequencies(text, pack_name):
     alphabet = symbols.alphabets[pack_name]
 
@@ -32,13 +40,16 @@ def _learn_letter_frequencies(text, pack_name):
     for letter in data:
         data[letter] /= letters_number
 
+    current_data = _get_current_data("resources/letter_frequencies.json")
+    current_data[pack_name] = data
+
     with open("resources/letter_frequencies.json", "w") as f:
-        json.dump(data, f)
+        json.dump(current_data, f)
 
 
 def _learn_most_common_words(text, pack_name):
     TOP_PERCENT = 0.08
-    MIN_WORD_LEN = 4
+    MIN_WORD_LEN = 3
 
     words_counter = collections.Counter()
     words_number = 0
@@ -58,14 +69,15 @@ def _learn_most_common_words(text, pack_name):
     top_words_num = int(len(words_counter) * TOP_PERCENT)
 
     data = dict(words_counter.most_common(top_words_num))
-    for word, _ in words_counter.most_common(10):
-        print(word)
 
     for word in data:
         data[word] /= words_number
 
+    current_data = _get_current_data("resources/most_common_words.json")
+    current_data[pack_name] = data
+
     with open("resources/most_common_words.json", "w") as f:
-        json.dump(data, f)
+        json.dump(current_data, f)
 
 
 def train(text: str, pack_name: str):

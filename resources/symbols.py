@@ -7,8 +7,11 @@ def _get_symbol_pack(path="./resources/symbols.json"):
 
 
 def _get_frequencies(path="./resources/letter_frequencies.json"):
-    with open(path, "r") as f:
-        return json.load(f)
+    try:
+        with open(path, "r") as f:
+            return json.load(f)
+    except json.decoder.JSONDecodeError:
+        return dict()
 
 
 alphabets = _get_symbol_pack()

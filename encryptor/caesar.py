@@ -45,7 +45,7 @@ class CaesarCypher:
         return decoded_text
 
     @staticmethod
-    def _get_score(text):
+    def _get_loss(text):
 
         letters_counter = collections.Counter()
         letters_number = 0
@@ -75,6 +75,6 @@ class CaesarCypher:
 
         for key in range(30):
             decoded = cls.decode(text, key)
-            best_variant = min((cls._get_score(decoded), key), best_variant)
+            best_variant = min((cls._get_loss(decoded), key), best_variant)
 
         return cls.decode(text, best_variant[1])

@@ -1,6 +1,7 @@
 from encryptor.caesar import CaesarCypher
 from encryptor.vigenere import VigenereCypher
 from encryptor.vernam import VernamCypher
+from testing.testing import Testing
 import learning.learn_text as trainer
 import argparse
 import sys
@@ -29,6 +30,10 @@ def output_text(text, output_file):
 def get_text_from_file(file):
     with open(file, "r") as f:
         return input_text(f)
+
+
+def clear_file(filename):
+    open(filename, "w").close()
 
 
 def encode(args):
@@ -62,10 +67,16 @@ def train(args):
 
 
 def reset(args):
+    clear_file("resources/letter_frequencies.json")
+    clear_file("resources/most_common_words.json")
     trainer.train(
         get_text_from_file("resources/text_for_learning_eng.txt"), "eng")
     trainer.train(
         get_text_from_file("resources/text_for_learning_rus.txt"), "rus")
+
+
+def test(args):
+    Testing.run()
 
 
 def make_parser():
@@ -113,6 +124,9 @@ def make_parser():
 
     reset_parser = subparsers.add_parser("reset", help="For reset")
     reset_parser.set_defaults(mode="reset", func=reset)
+
+    testing_parser = subparsers.add_parser("test", help="Run tests")
+    testing_parser.set_defaults(mode="test", func=test)
 
     return parser
 
