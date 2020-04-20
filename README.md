@@ -42,13 +42,20 @@ python pycrypt.py hack --input_file {input_file} --output_file {output_file} --c
 ```
 python pycrypt.py train {eng/rus} --input_file {input_file}
 ```
-
+##### Сброс
 Если вы обучили программу, но хотите вернуться к исходным текстам для обучения, введите:
 ```
 python pycrypt.py reset
 ```
 
+##### Тесты:
 Для запуска тестов введите:
 ```
 python pycrypt.py test
 ```
+##### Подсчёт частот букв
+Для подсчёта частот букв введите:
+```
+python pycrypt.py calc --pack {eng/rus} --input_file {input_file} --output_file {output_file}
+```
+
