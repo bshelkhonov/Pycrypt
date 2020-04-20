@@ -5,7 +5,10 @@ import random
 
 
 class Testing:
-    _test_files = ("./testing/tests/text_1.txt", "./testing/tests/text_2.txt")
+    _test_files = ("./testing/tests/text_1.txt",
+                   "./testing/tests/text_2.txt",
+                   "./testing/tests/text_3.txt",
+                   "./testing/tests/text_4.txt")
 
     @staticmethod
     def _get_text_from_file(file_name: str) -> str:

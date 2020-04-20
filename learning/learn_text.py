@@ -68,7 +68,6 @@ class Trainer:
         MIN_WORD_LEN = 3
 
         words_counter = collections.Counter()
-        words_number = 0
 
         def is_normal_word(w: str) -> bool:
             return len(w) >= MIN_WORD_LEN and \
@@ -80,14 +79,10 @@ class Trainer:
 
             if is_normal_word(word):
                 words_counter[word] += 1
-                words_number += 1
 
         top_words_num = int(len(words_counter) * TOP_PERCENT)
 
-        data = dict(words_counter.most_common(top_words_num))
-
-        for word in data:
-            data[word] /= words_number
+        data = [word[0] for word in words_counter.most_common(top_words_num)]
 
         return data
 

@@ -14,8 +14,21 @@ def _get_frequencies(path="./resources/letter_frequencies.json"):
         return dict()
 
 
+def _get_most_common_words(path="./resources/most_common_words.json"):
+    try:
+        with open(path, "r") as f:
+            data = json.load(f)
+        for pack in data:
+            data[pack] = set(data[pack])
+        return data
+
+    except json.decoder.JSONDecodeError:
+        return dict()
+
+
 alphabets = _get_symbol_pack()
 symbol_frequency = _get_frequencies()
+most_common_words = _get_most_common_words()
 
 
 def _get_vigenere_alphabet():
