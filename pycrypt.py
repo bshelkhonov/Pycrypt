@@ -2,9 +2,10 @@ from encryptor.caesar import CaesarCypher
 from encryptor.vigenere import VigenereCypher
 from encryptor.vernam import VernamCypher
 from testing.testing import Testing
-import learning.learn_text as trainer
+from learning.learn_text import Trainer
 import argparse
 import sys
+import json
 
 cyphers = {
     "caesar": CaesarCypher,
@@ -25,6 +26,10 @@ def input_text(input_file):
 
 def output_text(text, output_file):
     output_file.write(text)
+
+
+def write_json(data, output_file):
+    json.dump(data, output_file)
 
 
 def get_text_from_file(file):
@@ -60,18 +65,24 @@ def hack(args):
     output_text(processed_text, args.output_file)
 
 
+def calculate_letter_frequencies(args):
+    text = input_text(args.input_file)
+    data = Trainer.calculate_letters_frequency(text, args.pack)
+    write_json(data, args.output_file)
+
+
 def train(args):
     text = input_text(args.input_file)
-    trainer.train(text, args.pack)
+    Trainer.train(text, args.pack)
     print(f"Trained {args.pack} language")
 
 
 def reset(args):
     clear_file("resources/letter_frequencies.json")
     clear_file("resources/most_common_words.json")
-    trainer.train(
+    Trainer.train(
         get_text_from_file("resources/text_for_learning_eng.txt"), "eng")
-    trainer.train(
+    Trainer.train(
         get_text_from_file("resources/text_for_learning_rus.txt"), "rus")
 
 
@@ -114,6 +125,17 @@ def make_parser():
                              type=argparse.FileType("w"), help="Output file")
     hack_parser.add_argument("--cypher", choices=["caesar"],
                              help="Cypher algorithm", required=True)
+
+    calc_parser = subparsers.add_parser("calc",
+                                        help="For frequencies calculating")
+    calc_parser.set_defaults(mode="calc", func=calculate_letter_frequencies)
+
+    calc_parser.add_argument("--pack", choices=["eng", "rus"], help="Language",
+                             required=True)
+    calc_parser.add_argument("--input_file", default=sys.stdin,
+                             type=argparse.FileType("r"), help="Input file")
+    calc_parser.add_argument("--output_file", default=sys.stdout,
+                             type=argparse.FileType("w"), help="Output file")
 
     train_parser = subparsers.add_parser("train", help="For training")
     train_parser.set_defaults(mode="train", func=train)
