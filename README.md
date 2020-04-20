@@ -47,3 +47,8 @@ python pycrypt.py train {eng/rus} --input_file {input_file}
 ```
 python pycrypt.py reset
 ```
+
+Для запуска тестов введите:
+```
+python pycrypt.py test
+```
