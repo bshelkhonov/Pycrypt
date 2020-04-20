@@ -90,6 +90,7 @@ class CaesarCypher:
     @classmethod
     def hack(cls, text):
         MIN_TEXT_LENGTH = 5000
+        KEY_VARIANTS = 50
 
         best_variant = (math.inf, -1)
 
@@ -98,7 +99,7 @@ class CaesarCypher:
         else:
             loss_fn = cls.letter_loss
 
-        for key in range(30):
+        for key in range(KEY_VARIANTS):
             decoded = cls.decode(text, key)
             best_variant = min((loss_fn(decoded), key), best_variant)
 
