@@ -94,7 +94,7 @@ class CaesarCypher:
     @classmethod
     def hack(cls, text, proba_data, words_data):
         MIN_TEXT_LENGTH = 5000
-        KEY_VARIANTS = 200
+        KEY_VARIANTS = 51
 
         best_variant = (math.inf, -1)
 
@@ -102,6 +102,7 @@ class CaesarCypher:
             loss_fn = cls.word_loss
             data = words_data
         else:
+            print("HERE")
             loss_fn = cls.letter_loss
             data = proba_data
 
