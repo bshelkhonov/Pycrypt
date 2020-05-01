@@ -13,6 +13,9 @@ class CaesarCypher:
     @staticmethod
     def caesar_shift(char, key: int, alphabet: str):
         index = alphabet.index(char)
+        if key < 0:
+            key %= len(alphabet)
+            key = (key + len(alphabet)) % len(alphabet)
         new_index = (index + key) % len(alphabet)
         return alphabet[new_index]
 
@@ -49,7 +52,8 @@ class CaesarCypher:
         return decoded_text
 
     @classmethod
-    def letter_loss(cls, text, proba_data):
+    def letter_loss(cls, text, data):
+        proba_data = data["l"]
 
         letters_counter = dict()
         letters_number = collections.Counter()
@@ -78,9 +82,9 @@ class CaesarCypher:
         return score
 
     @classmethod
-    def word_loss(cls, text, word_data):
+    def word_loss(cls, text, data):
         word_match = 0
-
+        word_data = data["w"]
         for word in text.split():
             word = cls._extract_word(word).lower()
 
@@ -89,22 +93,19 @@ class CaesarCypher:
                     word_match += 1
                     break
 
-        return -word_match
+        return -word_match + cls.letter_loss(text, data)
 
     @classmethod
-    def hack(cls, text, proba_data, words_data):
+    def hack(cls, text, data):
         MIN_TEXT_LENGTH = 5000
-        KEY_VARIANTS = 51
+        KEY_VARIANTS = 33
 
         best_variant = (math.inf, -1)
 
-        if words_data is not None and len(text) < MIN_TEXT_LENGTH:
+        if len(text) < MIN_TEXT_LENGTH:
             loss_fn = cls.word_loss
-            data = words_data
         else:
-            print("HERE")
             loss_fn = cls.letter_loss
-            data = proba_data
 
         for key in range(KEY_VARIANTS):
             decoded = cls.decode(text, key)

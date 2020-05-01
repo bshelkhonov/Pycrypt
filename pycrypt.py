@@ -80,25 +80,20 @@ def decode(args):
 
 
 def hack(args):
-    proba_data = read_json(args.proba)
-    if args.words is not None:
-        words_data = read_json(args.words)
-    else:
-        words_data = None
+    data = read_json(args.model)
     text = input_text(args.input_file)
-    processed_text = cyphers[args.cypher].hack(text, proba_data, words_data)
+    processed_text = cyphers[args.cypher].hack(text, data)
     output_text(processed_text, args.output_file)
 
 
 def learn(args):
     text = input_text(args.input_file)
-    current_data = get_data_from_json(args.output_file)
-    if args.mode == "letters":
-        data = Trainer.calculate_letters_frequency(text, args.pack)
-    else:
-        data = Trainer.find_most_common_words(text, args.pack)
-    current_data[args.pack] = data
-    write_data_to_json(current_data, args.output_file)
+    letter_frequency, most_common_words = Trainer.train(text)
+    data = {
+        "l": letter_frequency,
+        "w": most_common_words
+    }
+    write_data_to_json(data, args.output_file)
 
 
 def test(args):
@@ -138,25 +133,18 @@ def make_parser():
                              type=argparse.FileType("r"), help="Input file")
     hack_parser.add_argument("--output_file", default=sys.stdout,
                              type=argparse.FileType("w"), help="Output file")
-    hack_parser.add_argument("--proba", type=argparse.FileType("r"),
-                             help="File with probabilities", required=True)
-    hack_parser.add_argument("--words", type=argparse.FileType("r"),
-                             help="File with most common words")
+    hack_parser.add_argument("--model", type=argparse.FileType("r"),
+                             help="File for hacking algorithm", required=True)
     hack_parser.add_argument("--cypher", choices=["caesar"],
                              help="Cypher algorithm", required=True)
 
-    calc_parser = subparsers.add_parser("learn",
-                                        help="For frequencies calculating")
-    calc_parser.set_defaults(mode="learn", func=learn)
-    calc_parser.add_argument("--mode", choices=["letters", "words"],
-                             help="letters - calculate letters frequencies, \
-                              words - find most common words", required=True)
-    calc_parser.add_argument("--pack", choices=["eng", "rus"], help="Language",
-                             required=True)
-    calc_parser.add_argument("--input_file", default=sys.stdin,
-                             type=argparse.FileType("r"), help="Input file")
-    calc_parser.add_argument("--output_file", default=sys.stdout,
-                             help="Output file", required=True)
+    train_parser = subparsers.add_parser("learn",
+                                         help="For learning")
+    train_parser.set_defaults(mode="learn", func=learn)
+    train_parser.add_argument("--input_file", default=sys.stdin,
+                              type=argparse.FileType("r"), help="Input file")
+    train_parser.add_argument("--output_file", help="Output file",
+                              required=True)
 
     testing_parser = subparsers.add_parser("test", help="Run tests")
     testing_parser.set_defaults(mode="test", func=test)

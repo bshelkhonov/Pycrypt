@@ -85,3 +85,16 @@ class Trainer:
         data = [word[0] for word in words_counter.most_common(top_words_num)]
 
         return data
+
+    @classmethod
+    def train(cls, text):
+        packs = ("eng", "rus", "other")
+        letters_frequency = dict()
+        for pack in packs:
+            letters_frequency[pack] = cls.calculate_letters_frequency(text,
+                                                                      pack)
+        most_common_words = dict()
+        for pack in packs[:2]:
+            most_common_words[pack] = cls.find_most_common_words(text, pack)
+
+        return letters_frequency, most_common_words
